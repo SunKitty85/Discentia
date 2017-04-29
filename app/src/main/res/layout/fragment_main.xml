@@ -23,31 +23,7 @@
             android:layout_height="wrap_content"
             android:text="Hello LCS" />
 
-        <Button
-            android:id="@+id/btn_takeCard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/button_takeCard" />
 
-        <Button
-            android:id="@+id/btn_showCards"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/button_showCards"/>
 
-        <Button
-            android:id="@+id/btn_debugActivity"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:text="Debug Activity"
-            />
-
-        <Button
-            android:id="@+id/btn_download"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Download"
-            />
-
-    </LinearLayout>
+        </LinearLayout>
 </RelativeLayout>

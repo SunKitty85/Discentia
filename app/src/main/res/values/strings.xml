@@ -1,10 +1,18 @@
 <resources>
     <string name="app_name">Discentia</string>
+    <string name="action_settings">Settings</string>
+
+
+    /* Navigation Drawer
+    --------------------*/
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_drawer_app_authors">by Moltox and SunKitty</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="nav_drawer_callQandA">Karten ziehen</string>
+    <string name="nav_drawer_callDownloadCards">Karten herunterladen</string>
+
 
 
     /* fragment_main
