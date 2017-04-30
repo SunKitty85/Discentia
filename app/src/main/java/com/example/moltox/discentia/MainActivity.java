@@ -1,8 +1,11 @@
 package com.example.moltox.discentia;
 
+import android.content.ClipData;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -22,11 +25,14 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = MainActivity.class.getName();
-    int count;
-    TextView m_tv_main;
-    Button btn_debugActivity;
-    Button btn_showCards;
+    private int count;
+    private TextView m_tv_main;
+    private Button btn_debugActivity;
+    private Button btn_showCards;
     private View view;
+    private boolean debugEnabled;
+    private SharedPreferences sharedPref;
+    NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,26 +56,26 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         m_tv_main = (TextView) findViewById(R.id.id_tv_main);
-        Log.v(TAG, "Serialnr: " + Build.SERIAL
-                + "\nFingerprint: " + Build.FINGERPRINT
-                + "\nBoard: " + Build.BOARD
-                + "\nBrand: " + Build.BRAND
-                + "\nBoatloader: " + Build.BOOTLOADER
-                + "\nDisplay: " + Build.DISPLAY
-                + "\nHardware: " + Build.HARDWARE
-                + "\nHost: " + Build.HOST
-                + "\nID: " + Build.ID
-                + "\nManufacturer: " + Build.MANUFACTURER
-                + "\nModel: " + Build.MODEL
-                + "\nProduct: " + Build.PRODUCT
-                + "\nTags: " + Build.TAGS
-                + "\nType: " + Build.TYPE
-                + "\nUser: " + Build.USER
-                + "\nTime: " + Build.TIME);
+        showBuildData();
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        boolean debugEnabled = sharedPref.getBoolean("key_debug_switch", false);
+        Menu navMenu = navigationView.getMenu();
+        if (debugEnabled) {
+            navMenu.findItem(R.id.nav_debugItem).setVisible(true);
+        } else {
+            navMenu.findItem(R.id.nav_debugItem).setVisible(false);
+        }
     }
 
     @Override
@@ -98,6 +104,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            callSettingsActivity(view);
             return true;
         }
 
@@ -115,7 +122,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_call_downloadCards) {
             callDownloadActivity(view);
 
-        }  else if (id == R.id.nav_showAllCards) {
+        } else if (id == R.id.nav_showAllCards) {
             callShowCardsActivity(view);
         } else if (id == R.id.nav_debugActivity) {
             callDebugActivy(view);
@@ -144,5 +151,29 @@ public class MainActivity extends AppCompatActivity
     private void callDownloadActivity(View view) {
         Intent intent = new Intent(this, Download.class);
         startActivity(intent);
+    }
+
+    private void callSettingsActivity(View view) {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
+    private void showBuildData() {
+        Log.v(TAG, "Serialnr: " + Build.SERIAL
+                + "\nFingerprint: " + Build.FINGERPRINT
+                + "\nBoard: " + Build.BOARD
+                + "\nBrand: " + Build.BRAND
+                + "\nBoatloader: " + Build.BOOTLOADER
+                + "\nDisplay: " + Build.DISPLAY
+                + "\nHardware: " + Build.HARDWARE
+                + "\nHost: " + Build.HOST
+                + "\nID: " + Build.ID
+                + "\nManufacturer: " + Build.MANUFACTURER
+                + "\nModel: " + Build.MODEL
+                + "\nProduct: " + Build.PRODUCT
+                + "\nTags: " + Build.TAGS
+                + "\nType: " + Build.TYPE
+                + "\nUser: " + Build.USER
+                + "\nTime: " + Build.TIME);
     }
 }

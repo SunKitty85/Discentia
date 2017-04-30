@@ -29,8 +29,8 @@ public class DownloadQuery {
 
     private String httpMethod;
     private static final String TAG = "DownloadQuery: ";
-    Context context;
-    ProgressDialog pdialog;
+    private Context context;
+
     private boolean connectionReady;
     private HttpURLConnection connection;
     private String ApiKey;
@@ -102,8 +102,8 @@ public class DownloadQuery {
         Do Connect
          */
         // connection.connect();
-        Log.d(TAG, "HttpURLConnection -> Connected");
         connection.connect();
+        Log.d(TAG, "HttpURLConnection -> Connected");
         JSONObject mJSONObject = contentJSON;
         String mJSONString = mJSONObject.toString();
         String urlencodedmJSONString = URLEncoder.encode(mJSONString,"UTF-8");
@@ -125,6 +125,7 @@ public class DownloadQuery {
         Log.d(TAG, "The Content Type is: " + connection.getContentType());
         Log.d(TAG, "The Content Encoding is: " + connection.getContentEncoding());
         InputStream dis = new DataInputStream(connection.getInputStream());
+
         String contentAsString = readIt(dis,len);
         Log.d(TAG, "ContentAsString is read");
         connection.disconnect();
@@ -149,8 +150,8 @@ public class DownloadQuery {
     }
 
     public class makeHttpRequest extends AsyncTask<String, Void, String> {
-
-        JSONObject contentJSON;
+        private ProgressDialog pdialog;
+        private JSONObject contentJSON;
         protected Context context;
 
 

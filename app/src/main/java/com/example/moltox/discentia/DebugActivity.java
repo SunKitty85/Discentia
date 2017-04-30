@@ -1,18 +1,23 @@
 package com.example.moltox.discentia;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import MiscHelper.StringUtils;
 import SqliteHelper.DBHelperClass;
 
 public class DebugActivity extends AppCompatActivity {
+    private final static String TAG = DebugActivity.class.getName();
 
-    TextView tv1;
+    private TextView tv1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +37,14 @@ public class DebugActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         tv1 = (TextView) findViewById(R.id.debug_tv1);
         fillTextViews();
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean debugSwitchPref = sharedPref.getBoolean("key_debug_switch", false);
+        String apiKey = sharedPref.getString("pref_api_key", "");
+        StringUtils stringUtils = new StringUtils();
+        String secureApiKey = stringUtils.md5(apiKey);
+        Log.v(TAG, "Debug Switch: " + String.valueOf(debugSwitchPref)
+                + "\nPref Api Key: " + apiKey
+                + "\nSecure Api Key: " + secureApiKey);
     }
 
     private void fillTextViews() {
@@ -43,7 +56,7 @@ public class DebugActivity extends AppCompatActivity {
                 + " AND " + db.CARDS_CATEGORY_TABLE_NAME + "." + db.COL_CARDS_CATEGORY_CATEGORYID + "=" + "1";
         */
         String cursorString = db.dumpQuerytoString(query);
-  //        String finalString = cursorString;
+        //        String finalString = cursorString;
         tv1.setText(cursorString);
 
 /*

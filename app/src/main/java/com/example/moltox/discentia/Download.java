@@ -1,7 +1,9 @@
 package com.example.moltox.discentia;
 
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -19,18 +21,20 @@ import java.io.IOException;
 import CursorAdapterHelper.CategoryCursorAdapter;
 import MiscHelper.DownloadQuery;
 import MiscHelper.JsonObjectsForDownload;
+import MiscHelper.StringUtils;
 import SqliteHelper.DBHelperClass;
 
 public class Download extends AppCompatActivity implements
         DownloadQuery.OnRequestExecutedListener {
     // private Context context;
     private static final String TAG = Download.class.getName();
-    private static final String SERVER_ROOT_URL = "http://5.9.67.156/lcs/";
+    private static final String SERVER_ROOT_URL = "http://5.9.67.156/Discentia/";
     private static final String SERVER_DIRECT_ORDER_EXTENSION = "query.php";
     private static final String API_KEY_DIRECTORDER = "u23923u5r823894n23z34fz8hhdsbvahuishwe8278";
-    TextView tv_download_1;
-    Button btn_downloadNow;
-    ListView lv_categories;
+    private String API_KEY;
+    private TextView tv_download_1;
+    private Button btn_downloadNow;
+    private ListView lv_categories;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +52,7 @@ public class Download extends AppCompatActivity implements
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        API_KEY = getApiKey();
         btn_downloadNow = (Button) findViewById(R.id.btn_download_downloadNow);
         btn_downloadNow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,8 +93,9 @@ public class Download extends AppCompatActivity implements
         DownloadQuery dq;
 
         try {
-            dq = new DownloadQuery(this, "POST", SERVER_ROOT_URL + SERVER_DIRECT_ORDER_EXTENSION, API_KEY_DIRECTORDER, this);
+            dq = new DownloadQuery(this, "POST", SERVER_ROOT_URL + SERVER_DIRECT_ORDER_EXTENSION, API_KEY, this);
             dq.execute(jsonObject);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -124,6 +130,13 @@ public class Download extends AppCompatActivity implements
         JsonObjectsForDownload jofd = new JsonObjectsForDownload();
         JSONObject jsonObject = jofd.getJsonForCards();
         return jsonObject;
+    }
+
+    private String getApiKey()  {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String unsecureApiKey = sharedPreferences.getString("pref_api_key","");
+        StringUtils stringUtils = new StringUtils();
+        return stringUtils.md5(unsecureApiKey);
     }
 }
 
