@@ -35,6 +35,7 @@ public class CardManagement {
 
     public CardManagement(Context context, View view)  {
         this.context = context;
+        this.view = view;
         dbHelperClass = new DBHelperClass(this.context);
     }
 
@@ -62,7 +63,7 @@ public class CardManagement {
             + "\nTimestamp Incorrect: " + String.valueOf(cd.getDone_DateTime_Incorrect()));
         }
     }
-    public Card getRandomCard(View view) {
+    public Card getRandomCard() {
         Card card = new Card();
         long rand;
         long currentCardID = 0;
