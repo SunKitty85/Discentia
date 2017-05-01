@@ -49,7 +49,14 @@ public class DebugActivity extends AppCompatActivity {
 
     private void fillTextViews() {
         DBHelperClass db = new DBHelperClass(getApplicationContext());
-        String query = "SELECT * FROM " + db.CARDS_TABLE_NAME;
+        String query = "SELECT * FROM " + db.CARDS_DONE_TABLE_NAME
+                + " WHERE " + db.CARDS_DONE_TABLE_NAME + "." + db.COL_CARDS_DONE_DATETIME_INCORRECT + "> 0"
+                + " AND " + db.COL_CARDS_DONE_CARD_ID
+                + " NOT IN (SELECT "
+                + db.COL_CARDS_DONE_CARD_ID + " FROM " + db.CARDS_DONE_TABLE_NAME
+                + " WHERE " + db.CARDS_DONE_TABLE_NAME + "." + db.COL_CARDS_DONE_DATETIME_CORRECT + "> 0)"
+                + " ORDER BY " + db.CARDS_DONE_TABLE_NAME + "." + db.COL_CARDS_DONE_DATETIME_CORRECT + " DESC LIMIT 0,5";
+
         /*
         String query =  "SELECT * FROM " + db.CARDS_CATEGORY_TABLE_NAME
                 + " WHERE " + db.CARDS_CATEGORY_TABLE_NAME + "." + db.COL_CARDS_CATEGORY_CARDID + "=" + "1"

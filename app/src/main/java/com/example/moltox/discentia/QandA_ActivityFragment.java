@@ -10,15 +10,16 @@ import android.view.ViewGroup;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class qanda_activityFragment extends Fragment {
+public class QandA_ActivityFragment extends Fragment {
 
-    public qanda_activityFragment() {
+    public QandA_ActivityFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_qanda_activity, container, false);
+        View view = inflater.inflate(R.layout.fragment_qanda_activity, container, false);
+        return view;
     }
 
 /*

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.moltox.discentia.qanda_activityFragment"
+    tools:context="com.example.moltox.discentia.QandA_ActivityFragment"
     tools:showIn="@layout/activity_qanda_activity">
 
     <LinearLayout

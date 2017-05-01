@@ -3,6 +3,8 @@ package MiscHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 /**
  * Created by moltox on 26.03.2017.
  */
@@ -41,12 +43,13 @@ public class JsonObjectsForDownload {
         return jsonObject;
     }
 
-    public JSONObject getJsonForCards()  {
+    public JSONObject getJsonForCards(ArrayList<Integer> idsArrayList)  {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("MyKey", MyKey);
             jsonObject.put("ToDoFlag",ToDoFlag_SYNC);
             jsonObject.put("TableName",TableName_Cards);
+            jsonObject.put("Categories",idsArrayList.toString());
             jsonObject.put("Card_ID","");
             jsonObject.put("minAge","");
             jsonObject.put("lastPoll",4711);

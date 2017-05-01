@@ -7,11 +7,9 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,8 +19,8 @@ import java.util.List;
 
 public class DBHelperClass extends SQLiteOpenHelper {
     private static final String TAG = DBHelperClass.class.getName();
-    public static final int DATABASE_VERSION = 31;
-    public static final String DATABASE_NAME = "LCS_DB.db";
+    private static final int DATABASE_VERSION = 34;
+    private static final String DATABASE_NAME = "DISCENTIA.db";
 
     // Table Names
     public static final String CARDS_TABLE_NAME = "tb_cards";
@@ -161,10 +159,8 @@ public class DBHelperClass extends SQLiteOpenHelper {
         return card_done_ID;
     }
 
-
     // Fetching a special Card
     // *******************************************************************
-
     public Card getCard(long card_id) {
         SQLiteDatabase db = this.getReadableDatabase();
         String selectQuery =
@@ -192,7 +188,6 @@ public class DBHelperClass extends SQLiteOpenHelper {
 
     // Fetching all cards
     // ***************************************************************************
-
     public List<Card> getAllCards() {
         List<Card> tableCards = new ArrayList<Card>();
         String selectQuery = "SELECT * FROM " + CARDS_TABLE_NAME;
@@ -215,6 +210,7 @@ public class DBHelperClass extends SQLiteOpenHelper {
         Log.v(TAG, selectQuery);
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
+
         return cursor;
     }
 
@@ -225,13 +221,6 @@ public class DBHelperClass extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public void showCardListAsLog() {
-        Log.v(TAG, "Get all Cards");
-        List<Card> allCards = this.getAllCards();
-        for (Card tc : allCards) {
-            Log.v(TAG, "CARD: " + tc.getId() + " " + tc.getQuestion());
-        }
-    }
 
 
     public int getCountCards() {
@@ -255,6 +244,8 @@ public class DBHelperClass extends SQLiteOpenHelper {
                 Cards_done dc = new Cards_done();
                 dc.setId(cursor.getInt(cursor.getColumnIndex(COL_COMMON_ID)));
                 dc.setCard_id(cursor.getLong(cursor.getColumnIndex(COL_CARDS_DONE_CARD_ID)));
+                dc.setDone_DateTime_Correct(cursor.getLong(cursor.getColumnIndex(COL_CARDS_DONE_DATETIME_CORRECT)));
+                dc.setDone_DateTime_Incorrect(cursor.getLong(cursor.getColumnIndex(COL_CARDS_DONE_DATETIME_INCORRECT)));
                 tableCards_Done.add(dc);
             } while (cursor.moveToNext());
         }
@@ -321,7 +312,6 @@ public class DBHelperClass extends SQLiteOpenHelper {
                     JSONArray jArrayDbCardsCategories = new JSONArray((jsonObject.getString("out_JSON_Cards_Categories")));
                     // Card anlegen und in DB inserten
                     for (int i = 0; i < jArrayDbCards.length() - 1; i++) {
-
                         if (jArrayDbCards.getString(i) != null) {
                             JSONObject jObj = new JSONObject(jArrayDbCards.getString(i));
                             int cardId = 0;

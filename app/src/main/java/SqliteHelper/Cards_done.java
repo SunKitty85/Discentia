@@ -1,5 +1,7 @@
 package SqliteHelper;
 
+import android.util.Log;
+
 import static java.sql.Types.NULL;
 
 /**
@@ -7,6 +9,7 @@ import static java.sql.Types.NULL;
  */
 
 public class Cards_done {
+    private static final String TAG = Cards_done.class.getName();
     long id;
     long card_id;
     long Done_DateTime_Correct;
@@ -18,6 +21,7 @@ public class Cards_done {
     public Cards_done(long card_id,boolean isCorrect)  {
         this.card_id = card_id;
         long timestamp = System.currentTimeMillis()/1000;
+        Log.v(TAG, "Timestamp: " + timestamp);
         if (isCorrect)  {
             this.Done_DateTime_Correct = timestamp;
             this.Done_DateTime_Incorrect = NULL;

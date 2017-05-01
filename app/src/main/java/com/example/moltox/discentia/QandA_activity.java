@@ -9,21 +9,21 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
 import java.util.Random;
 
+import MiscHelper.CardManagement;
 import SqliteHelper.Card;
 import SqliteHelper.Cards_done;
 import SqliteHelper.DBHelperClass;
-
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 
-public class qanda_activity extends AppCompatActivity {
-    private static final String TAG = qanda_activity.class.getName();
-    DBHelperClass db;
-    Long currentCardID;
+public class QandA_activity extends AppCompatActivity {
+    private static final String TAG = QandA_activity.class.getName();
+
+    CardManagement cardManagement;
+    int currentCardID;
     TextView tv_qanda_card_id;
     TextView tv_qanda_card_question;
     TextView tv_qanda_card_answer1;
@@ -33,15 +33,17 @@ public class qanda_activity extends AppCompatActivity {
     Button btn_AnswerCorrect;
     Button btn_AnswerIncorrect;
     Button btn_dumpQuery;
-    long rand;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_qanda_activity);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        db = new DBHelperClass(getApplicationContext());
+        cardManagement = new CardManagement(this);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,7 +51,8 @@ public class qanda_activity extends AppCompatActivity {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
 
-                db.showCardListAsLog();
+                cardManagement.showCardListAsLog();
+                cardManagement.showCardDoneListAsLog();
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -62,23 +65,9 @@ public class qanda_activity extends AppCompatActivity {
         btn_newCard.setOnClickListener(new View.OnClickListener() {
                                            @Override
                                            public void onClick(View v) {
-                                               Random r = new Random();
-                                               int countCards = db.getCountCards();
-                                               Log.v(TAG, "Es gibt  " + countCards + " Cards");
-                                               if (countCards < 1) {
-                                                   // TODO Delete isnertTestCards method
-                                                   // insertTestCards();
-                                               } else {
-
-                                                   do {
-                                                       rand = r.nextInt(1500);
-                                                       currentCardID = rand % (countCards + 1);
-                                                       Log.v(TAG, "Random ist: " + String.valueOf(rand) +
-                                                               "\nCard ID ist: " + currentCardID);
-                                                   } while (currentCardID == 0);
-                                                   showCard(currentCardID);
+                                               showCard(cardManagement.getRandomCard(v));
                                                }
-                                           }
+
                                        }
         );
 
@@ -90,17 +79,17 @@ public class qanda_activity extends AppCompatActivity {
                                                   tv_qanda_card_answer1.setVisibility(View.VISIBLE);
                                               }
                                           }
-
-
         );
 
         btn_AnswerCorrect = (Button) findViewById(R.id.btn_answer_correct);
         btn_AnswerCorrect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Log.v(TAG, "Answer Correct");
-                Cards_done dc = new Cards_done(currentCardID, TRUE);
-                db.createCard_DoneRow(dc);
+                cardManagement.makeCardDone(v,currentCardID,true);
+
+
             }
         });
 
@@ -108,13 +97,10 @@ public class qanda_activity extends AppCompatActivity {
         btn_AnswerIncorrect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // TODO Extract Cards done Methods to CardManagement Class
                 Log.v(TAG, "Answer Incorrect");
-                Cards_done dc = new Cards_done(currentCardID, FALSE);
-                db.createCard_DoneRow(dc);
-                // +++++++++++++++++++++++++++++++++++++++++++++++
-                // Debug only:
-                // ++++++++++++++++++++++++++++++++++++++++++++++++
-                db.selectAllOfTabletoLog(db.CARDS_DONE_TABLE_NAME);
+                cardManagement.makeCardDone(v, currentCardID,false);
+
             }
         });
 
@@ -130,11 +116,11 @@ public class qanda_activity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        db.closeDB();
+
     }
 
-    private void showCard(long id) {
-        Card card = db.getCard(id);
+    private void showCard(Card card) {
+
         tv_qanda_card_id.setText("Card ID: " + card.getId()
                 + "\nRelease Date: " + card.getReleaseDate()
                 + "\nKategorie ID: " + card.getCategory_id());
@@ -142,6 +128,6 @@ public class qanda_activity extends AppCompatActivity {
         tv_qanda_card_question.setText(getString(R.string.tv_qanda_frag_card_question) + " " + card.getQuestion());
         tv_qanda_card_answer1.setVisibility(View.INVISIBLE);
         tv_qanda_card_answer1.setText(getString(R.string.tv_qanda_frag_card_answer1) + "\n\n\n " + card.getAnswer1());
-        currentCardID = id;
+        currentCardID = card.getId();
     }
 }

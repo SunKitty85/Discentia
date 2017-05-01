@@ -1,6 +1,5 @@
 package com.example.moltox.discentia;
 
-import android.content.ClipData;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -134,7 +133,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void callQandaActivity(View view) {
-        Intent intent = new Intent(this, qanda_activity.class);
+        Intent intent = new Intent(this, QandA_activity.class);
         startActivity(intent);
     }
 

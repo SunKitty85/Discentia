@@ -38,6 +38,9 @@
     <string name="title_activity_show_cards">ShowCards</string>
     <string name="title_activity_settings">Settings</string>
 
+    <!-- Strings related to CardManagement -->
+    <string name="no_cards_available">Keine Karten in der Datenbank vorhanden</string>
+    <string name="no_cards_chosen">Keine Karte ausgewählt</string>
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->

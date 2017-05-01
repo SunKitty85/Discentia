@@ -16,7 +16,15 @@ public class Card {
     String category_id;
 
     // constructors ...
-    public Card()  {};
+    public Card()  {
+        this.question = "";
+        this.answer1 = "";
+        this.answer2 = "";
+        this.answer3 = "";
+        this.answer4 = "";
+        this.releaseDate = "";
+        this.category_id = "";
+    };
 
     /*
     public Card(String question, String answer1, String answer2, String answer3, String answer4, String releaseDate,String category_id)  {
