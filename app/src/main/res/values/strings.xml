@@ -23,6 +23,8 @@
     /* fragment qandaactivity
     -------------------------- */
     <string name="title_activity_qanda_activity">Fragen und Antworten</string>
+    <string name="tab_title_frontside">Vorne</string>
+    <string name="tab_title_backside">Hinten</string>
     <string name="tv_qanda_frag_card_id">Card ID:\nRelease Date</string>
     <string name="tv_qanda_frag_card_question">Frage</string>
     <string name="tv_qanda_frag_card_answer1">Antwort 1</string>

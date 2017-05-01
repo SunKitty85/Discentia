@@ -108,8 +108,8 @@ public class QandA_activity extends AppCompatActivity implements TabCommunicator
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new QandA_ActivityFragment(), "Frontside");
-        adapter.addFragment(new QandA_ActivityFragmentBackside(), "Backside");
+        adapter.addFragment(new QandA_ActivityFragment(), getString(R.string.tab_title_frontside));
+        adapter.addFragment(new QandA_ActivityFragmentBackside(), getString(R.string.tab_title_backside));
         // adapter.addFragment(new ThreeFragment(), "THREE");
         viewPager.setAdapter(adapter);
     }
