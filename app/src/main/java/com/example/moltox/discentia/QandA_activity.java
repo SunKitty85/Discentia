@@ -1,38 +1,38 @@
 package com.example.moltox.discentia;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
-import java.util.Random;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import Interfaces.TabCommunicator;
 import MiscHelper.CardManagement;
-import SqliteHelper.Card;
-import SqliteHelper.Cards_done;
-import SqliteHelper.DBHelperClass;
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
 
 
-public class QandA_activity extends AppCompatActivity {
+public class QandA_activity extends AppCompatActivity implements TabCommunicator {
     private static final String TAG = QandA_activity.class.getName();
 
+    private Toolbar toolbar;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
     CardManagement cardManagement;
-    int currentCardID;
-    TextView tv_qanda_card_id;
-    TextView tv_qanda_card_question;
-    TextView tv_qanda_card_answer1;
-
-    Button btn_newCard;
     Button btn_showAnswer;
-    Button btn_AnswerCorrect;
-    Button btn_AnswerIncorrect;
-    Button btn_dumpQuery;
+    OnStringSend mOnStringSend;
+    String mSubmitCache;
 
 
     @Override
@@ -56,61 +56,21 @@ public class QandA_activity extends AppCompatActivity {
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        tv_qanda_card_id = (TextView) findViewById(R.id.tv_qanda_card_id);
-        tv_qanda_card_question = (TextView) findViewById(R.id.tv_qanda_card_question);
-        tv_qanda_card_answer1 = (TextView) findViewById(R.id.tv_qanda_card_answer1);
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        setupViewPager(viewPager);
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
+    }
 
-
-        btn_newCard = (Button) findViewById(R.id.btn_newCard);
-        btn_newCard.setOnClickListener(new View.OnClickListener() {
-                                           @Override
-                                           public void onClick(View v) {
-                                               showCard(cardManagement.getRandomCard(v));
-                                               }
-
-                                       }
-        );
-
-        btn_showAnswer = (Button) findViewById(R.id.btn_showAnswer);
-        btn_showAnswer.setOnClickListener(new View.OnClickListener() {
-                                              @Override
-                                              public void onClick(View v) {
-                                                  Log.v(TAG, "Show Answer Button");
-                                                  tv_qanda_card_answer1.setVisibility(View.VISIBLE);
-                                              }
-                                          }
-        );
-
-        btn_AnswerCorrect = (Button) findViewById(R.id.btn_answer_correct);
-        btn_AnswerCorrect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Log.v(TAG, "Answer Correct");
-                cardManagement.makeCardDone(v,currentCardID,true);
-
-
-            }
-        });
-
-        btn_AnswerIncorrect = (Button) findViewById(R.id.btn_answer_not_correct);
-        btn_AnswerIncorrect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO Extract Cards done Methods to CardManagement Class
-                Log.v(TAG, "Answer Incorrect");
-                cardManagement.makeCardDone(v, currentCardID,false);
-
-            }
-        });
-
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
     }
 
     @Override
@@ -119,15 +79,70 @@ public class QandA_activity extends AppCompatActivity {
 
     }
 
-    private void showCard(Card card) {
-
-        tv_qanda_card_id.setText("Card ID: " + card.getId()
-                + "\nRelease Date: " + card.getReleaseDate()
-                + "\nKategorie ID: " + card.getCategory_id());
-
-        tv_qanda_card_question.setText(getString(R.string.tv_qanda_frag_card_question) + " " + card.getQuestion());
-        tv_qanda_card_answer1.setVisibility(View.INVISIBLE);
-        tv_qanda_card_answer1.setText(getString(R.string.tv_qanda_frag_card_answer1) + "\n\n\n " + card.getAnswer1());
-        currentCardID = card.getId();
+    @Override
+    public void sendString(String string) {
+        submitStringToFrag(string);
     }
+
+    public void submitStringToFrag(final String s) {
+        if (mOnStringSend == null) {
+            // if FragmentB doesn't exist jet, cache value
+            mSubmitCache = s;
+            return;
+        }
+        mOnStringSend.submit(s);
+    }
+
+
+    public void setOnStringSend(OnStringSend c) {
+        mOnStringSend = c;
+        // deliver cached string, if any
+        if (TextUtils.isEmpty(mSubmitCache) == false) {
+            c.submit(mSubmitCache);
+        }
+    }
+
+    public interface OnStringSend {
+        public void submit(String s);
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new QandA_ActivityFragment(), "Frontside");
+        adapter.addFragment(new QandA_ActivityFragmentBackside(), "Backside");
+        // adapter.addFragment(new ThreeFragment(), "THREE");
+        viewPager.setAdapter(adapter);
+    }
+
+
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
+    }
+
+
 }
