@@ -4,6 +4,7 @@ package com.example.moltox.discentia;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatImageButton;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ public class QandA_ActivityFragmentBackside extends Fragment implements QandA_ac
     private static final String TAG = QandA_ActivityFragmentBackside.class.getName();
     private View view;
     private TextView tv;
+
     private Button btn_AnswerCorrect;
     private Button btn_AnswerIncorrect;
     private QandA_activity mMain;
@@ -50,6 +52,7 @@ public class QandA_ActivityFragmentBackside extends Fragment implements QandA_ac
         super.onViewCreated(view, savedInstanceState);
         this.view = view;
         tv = (TextView) view.findViewById(R.id.tv_backsidefrag_answer);
+
         btn_AnswerCorrect = (Button) view.findViewById(R.id.btn_answer_correct);
         btn_AnswerCorrect.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,6 +92,6 @@ public class QandA_ActivityFragmentBackside extends Fragment implements QandA_ac
     @Override
     public void submit(Card card) {
         tv.setText(card.getAnswer1());
-        // currentCardID = card.getCardId();
+        currentCardID = card.getCardId();
     }
 }

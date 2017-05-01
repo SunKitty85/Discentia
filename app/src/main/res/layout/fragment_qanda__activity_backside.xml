@@ -8,34 +8,54 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:baselineAligned="false"
         android:orientation="vertical">
+
+
 
         <TextView
             android:id="@+id/tv_backsidefrag_answer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:text="backside Fragment" />
-
+        <!-- for gravity bottom required layout -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="bottom"
+            android:layout_height="match_parent"
+            android:baselineAligned="false"
             android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/btn_answer_correct"
-                android:layout_width="0dp"
+            <!-- Linear Layout for being vertical orientated and gravity bottom -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight=".5"
-                android:text="@string/button_correct" />
+                android:layout_gravity="bottom"
+                android:orientation="vertical">
 
-            <Button
-                android:id="@+id/btn_answer_not_correct"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight=".5"
-                android:text="@string/button_not_correct" />
 
+
+
+                <!-- Linear Layout for Buttons (horizontal) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/activity_above_fab_margin">
+
+                    <Button
+                        android:id="@+id/btn_answer_correct"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".5"
+                        android:text="@string/button_correct" />
+
+                    <Button
+                        android:id="@+id/btn_answer_not_correct"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".5"
+                        android:text="@string/button_not_correct" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
