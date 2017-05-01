@@ -1,8 +1,13 @@
 package com.example.moltox.discentia;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,9 +17,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private static final String TAG = MainActivity.class.getName();
+    private int count;
+    private TextView m_tv_main;
+    private Button btn_debugActivity;
+    private Button btn_showCards;
+    private View view;
+    private boolean debugEnabled;
+    private SharedPreferences sharedPref;
+    NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,11 +52,29 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        m_tv_main = (TextView) findViewById(R.id.id_tv_main);
+        showBuildData();
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        boolean debugEnabled = sharedPref.getBoolean("key_debug_switch", false);
+        Menu navMenu = navigationView.getMenu();
+        if (debugEnabled) {
+            navMenu.findItem(R.id.nav_debugItem).setVisible(true);
+        } else {
+            navMenu.findItem(R.id.nav_debugItem).setVisible(false);
+        }
     }
 
     @Override
@@ -68,6 +103,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            callSettingsActivity(view);
             return true;
         }
 
@@ -80,22 +116,65 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_callQanda) {
+            callQandaActivity(view);
+        } else if (id == R.id.nav_call_downloadCards) {
+            callDownloadActivity(view);
 
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.nav_showAllCards) {
+            callShowCardsActivity(view);
+        } else if (id == R.id.nav_debugActivity) {
+            callDebugActivy(view);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    private void callQandaActivity(View view) {
+        Intent intent = new Intent(this, QandA_activity.class);
+        startActivity(intent);
+    }
+
+    private void callShowCardsActivity(View v) {
+        Intent intent = new Intent(this, ShowCards.class);
+        startActivity(intent);
+    }
+
+    private void callDebugActivy(View view) {
+        Intent intent = new Intent(this, DebugActivity.class);
+        startActivity(intent);
+    }
+
+    private void callDownloadActivity(View view) {
+        Intent intent = new Intent(this, Download.class);
+        startActivity(intent);
+    }
+
+    private void callSettingsActivity(View view) {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
+    private void showBuildData() {
+        Log.v(TAG, "Serialnr: " + Build.SERIAL
+                + "\nFingerprint: " + Build.FINGERPRINT
+                + "\nBoard: " + Build.BOARD
+                + "\nBrand: " + Build.BRAND
+                + "\nBoatloader: " + Build.BOOTLOADER
+                + "\nDisplay: " + Build.DISPLAY
+                + "\nHardware: " + Build.HARDWARE
+                + "\nHost: " + Build.HOST
+                + "\nID: " + Build.ID
+                + "\nManufacturer: " + Build.MANUFACTURER
+                + "\nModel: " + Build.MODEL
+                + "\nProduct: " + Build.PRODUCT
+                + "\nTags: " + Build.TAGS
+                + "\nType: " + Build.TYPE
+                + "\nUser: " + Build.USER
+                + "\nTime: " + Build.TIME);
+    }
+
+
 }
