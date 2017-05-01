@@ -12,7 +12,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -21,6 +20,7 @@ import java.util.List;
 
 import Interfaces.TabCommunicator;
 import MiscHelper.CardManagement;
+import SqliteHelper.Card;
 
 
 public class QandA_activity extends AppCompatActivity implements TabCommunicator {
@@ -30,9 +30,9 @@ public class QandA_activity extends AppCompatActivity implements TabCommunicator
     private TabLayout tabLayout;
     private ViewPager viewPager;
     CardManagement cardManagement;
-    Button btn_showAnswer;
-    OnStringSend mOnStringSend;
-    String mSubmitCache;
+
+    OnCardSend mOnCardSend;
+    Card mSubmitCache;
 
 
     @Override
@@ -80,36 +80,36 @@ public class QandA_activity extends AppCompatActivity implements TabCommunicator
     }
 
     @Override
-    public void sendString(String string) {
-        submitStringToFrag(string);
+    public void sendCard(Card card) {
+        submitStringToFrag(card);
     }
 
-    public void submitStringToFrag(final String s) {
-        if (mOnStringSend == null) {
+    public void submitStringToFrag(final Card card) {
+        if (mOnCardSend == null) {
             // if FragmentB doesn't exist jet, cache value
-            mSubmitCache = s;
+            mSubmitCache = card;
             return;
         }
-        mOnStringSend.submit(s);
+        mOnCardSend.submit(card);
     }
 
 
-    public void setOnStringSend(OnStringSend c) {
-        mOnStringSend = c;
+    public void setOnCardSend(OnCardSend onCardSend) {
+        mOnCardSend = onCardSend;
         // deliver cached string, if any
-        if (TextUtils.isEmpty(mSubmitCache) == false) {
-            c.submit(mSubmitCache);
+        if (mSubmitCache != null) {
+            onCardSend.submit(mSubmitCache);
         }
     }
 
-    public interface OnStringSend {
-        public void submit(String s);
+    public interface OnCardSend {
+        public void submit(Card card);
     }
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new QandA_ActivityFragment(), "Frontside");
-        adapter.addFragment(new QandA_ActivityFragmentBackside(), "Backside");
+        adapter.addFragment(new QandA_ActivityFragmentFrontside(), getString(R.string.tab_title_frontside));
+        adapter.addFragment(new QandA_ActivityFragmentBackside(), getString(R.string.tab_title_backside));
         // adapter.addFragment(new ThreeFragment(), "THREE");
         viewPager.setAdapter(adapter);
     }
