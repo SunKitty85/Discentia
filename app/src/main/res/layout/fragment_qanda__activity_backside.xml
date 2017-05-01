@@ -5,57 +5,77 @@
     android:layout_height="match_parent"
     tools:context="com.example.moltox.discentia.QandA_ActivityFragmentBackside">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:baselineAligned="false"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/cardview_light_background">
 
-
-
-        <TextView
-            android:id="@+id/tv_backsidefrag_answer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="backside Fragment" />
-        <!-- for gravity bottom required layout -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="90"
             android:baselineAligned="false"
             android:orientation="horizontal">
-            <!-- Linear Layout for being vertical orientated and gravity bottom -->
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
+                android:layout_gravity="center"
                 android:orientation="vertical">
 
+                <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                    android:layout_width="300dp"
+                    android:layout_height="300dp"
+                    android:layout_gravity="center"
+                    card_view:cardCornerRadius="4dp"
+                    card_view:cardElevation="4dp">
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
 
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:orientation="vertical">
 
-                <!-- Linear Layout for Buttons (horizontal) -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingBottom="@dimen/activity_above_fab_margin">
-
-                    <Button
-                        android:id="@+id/btn_answer_correct"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight=".5"
-                        android:text="@string/button_correct" />
-
-                    <Button
-                        android:id="@+id/btn_answer_not_correct"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight=".5"
-                        android:text="@string/button_not_correct" />
-                </LinearLayout>
+                            <TextView
+                                android:id="@+id/tv_backsidefrag_answer"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="backside Fragment" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
             </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="10"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_answer_correct"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".5"
+                android:text="@string/button_correct" />
+
+            <Button
+                android:id="@+id/btn_answer_not_correct"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".5"
+                android:text="@string/button_not_correct" />
         </LinearLayout>
     </LinearLayout>
 

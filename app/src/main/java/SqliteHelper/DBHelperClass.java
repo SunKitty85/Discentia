@@ -100,8 +100,8 @@ public class DBHelperClass extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_CARD_CATEGORY =
             "CREATE TABLE " + CARDS_CATEGORY_TABLE_NAME + " ("
                     + COL_CARDS_CATEGORY_CARDID + " integer, "
-                    + COL_CARDS_CATEGORY_CATEGORYID + " integer, PRIMARY KEY ("
-                    + COL_CARDS_CATEGORY_CARDID + "," + COL_CARDS_CATEGORY_CATEGORYID + "))";
+                    + COL_CARDS_CATEGORY_CATEGORYID + " integer," +
+                    " PRIMARY KEY ("+ COL_CARDS_CATEGORY_CARDID + "," + COL_CARDS_CATEGORY_CATEGORYID + "))";
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -346,6 +346,8 @@ public class DBHelperClass extends SQLiteOpenHelper {
                         long cat_id = insertCards_Category(contentValues);
 
                     }
+
+
                     break;
                 case TABLE_FLAG_CATEGORY:
                     // Data for DB extract:
