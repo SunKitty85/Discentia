@@ -64,7 +64,7 @@ public class QandA_ActivityFragmentFrontside extends Fragment {
 
     private void showCard(Card card) {
 
-        tv_qanda_card_id.setText("Card ID: " + card.getId()
+        tv_qanda_card_id.setText("ID: " + card.getId()
                 + "\nRelease Date: " + card.getReleaseDate()
                 + "\nKategorie ID: " + card.getCategory_id());
 

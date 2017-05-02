@@ -82,7 +82,8 @@ public class QandA_activity extends AppCompatActivity implements TabCommunicator
     }
 
     @Override
-    public void sendCard(Card card) {
+    public void sendCard(Card card)
+    {
         submitStringToFrag(card);
     }
 

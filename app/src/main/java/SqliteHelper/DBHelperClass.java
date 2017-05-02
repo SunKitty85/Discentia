@@ -21,7 +21,7 @@ import java.util.List;
 
 public class DBHelperClass extends SQLiteOpenHelper {
     private static final String TAG = DBHelperClass.class.getName();
-    private static final int DATABASE_VERSION = 39;
+    private static final int DATABASE_VERSION = 40;
     public static final String DATABASE_NAME = "DISCENTIA.db";
 
     // Table Names
@@ -207,6 +207,7 @@ public class DBHelperClass extends SQLiteOpenHelper {
         Log.v(TAG, "Cursor Count: " + cursor.getCount() + "\nCursor pos: " + cursor.getPosition());
         Card card = new Card();
         card.setId(cursor.getInt(cursor.getColumnIndex(COL_COMMON_ID)));
+        card.setCardId(cursor.getInt(cursor.getColumnIndex(COL_CARDS_CARD_ID)));
         card.setQuestion(cursor.getString(cursor.getColumnIndex((COL_CARDS_QUESTION))));
         card.setAnswer1(cursor.getString(cursor.getColumnIndex((COL_CARDS_ANSWER01))));
         card.setAnswer2(cursor.getString(cursor.getColumnIndex((COL_CARDS_ANSWER02))));

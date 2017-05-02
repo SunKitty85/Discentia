@@ -64,6 +64,7 @@ public class DebugActivity extends AppCompatActivity {
                 + " AND " + db.CARDS_CATEGORY_TABLE_NAME + "." + db.COL_CARDS_CATEGORY_CATEGORYID + "=" + "1";
         */
         // String query = "SELECT name FROM sqlite_master WHERE type='table'";
+        /*
         String query = "SELECT tb_cards.question,tb_category.category,tb_subject.subject" +
                 " FROM tb_cards,tb_cards_category,tb_category,tb_subject,tb_cards_subject " +
                 "WHERE tb_cards._id = tb_cards_category.card_id " +
@@ -71,6 +72,8 @@ public class DebugActivity extends AppCompatActivity {
                 "AND tb_cards_category.category_id = 1 " +
                 "AND tb_cards_category.category_id = tb_category._id " +
                 "AND tb_cards_subject.subject_id = tb_subject._id";
+                */
+        String query = "SELECT * FROM " + DBHelperClass.CARDS_TABLE_NAME;
         String cursorString = db.dumpQuerytoString(query);
         //        String finalString = cursorString;
         tv1.setText(cursorString);

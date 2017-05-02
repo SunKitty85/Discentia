@@ -91,7 +91,7 @@ public class CardManagement {
 
 
     public void makeCardDone(View view, int currentCardID, boolean answerCorrect)  {
-        if (currentCardID != 0) {
+        if (currentCardID != -1) {
             Cards_done dc = new Cards_done(currentCardID, answerCorrect);
             long cardDoneRowId = dbHelperClass.createCard_DoneRow(dc);
             Log.v(TAG, "CardDoneRowId = " + cardDoneRowId
