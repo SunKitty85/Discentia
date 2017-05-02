@@ -5,6 +5,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import SqliteHelper.DBHelperClass;
+
 /**
  * Created by moltox on 26.03.2017.
  */
@@ -22,8 +24,9 @@ JsonObject:
 public class JsonObjectsForDownload {
     private static final String MyKey = "myKey2017";
     private static final String ToDoFlag_SYNC = "SYNC";
-    private static final String TableName_Cards = "cards";
-    private static final String TableName_Category = "category";
+    private static final String TableName_Cards = DBHelperClass.CARDS_TABLE_NAME;   //"cards";
+    private static final String TableName_Category = DBHelperClass.CATEGORY_TABLE_NAME; //"category";
+    private static final String TableName_Subject = DBHelperClass.SUBJECT_TABLE_NAME;
     
     public JsonObjectsForDownload()  {
 
@@ -34,7 +37,22 @@ public class JsonObjectsForDownload {
             jsonObject.put("MyKey", MyKey);
             jsonObject.put("ToDoFlag",ToDoFlag_SYNC);
             jsonObject.put("TableName",TableName_Category);
-            jsonObject.put("Category_ID","");
+            jsonObject.put("Subject_ID","");
+            jsonObject.put("minAge","");
+            jsonObject.put("lastPoll",4711);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonObject;
+    }
+
+    public JSONObject getJsonForSubject()  {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("MyKey", MyKey);
+            jsonObject.put("ToDoFlag",ToDoFlag_SYNC);
+            jsonObject.put("TableName",TableName_Subject);
+            jsonObject.put("Subject_ID","");
             jsonObject.put("minAge","");
             jsonObject.put("lastPoll",4711);
         } catch (JSONException e) {

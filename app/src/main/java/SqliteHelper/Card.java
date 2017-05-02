@@ -38,7 +38,7 @@ public class Card {
     }
     */
 
-    public Card(int cardId, String question, String answer1, String answer2, String answer3, String answer4, String releaseDate, String category_id)  {
+    public Card(int cardId, String question, String answer1, String answer2, String answer3, String answer4, String releaseDate)  {
         this.id = id;
         this.cardId = cardId;
         this.question = question;

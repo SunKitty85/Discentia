@@ -16,7 +16,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
@@ -34,16 +33,12 @@ import MiscHelper.JsonObjectsForDownload;
 import MiscHelper.StringUtils;
 import SqliteHelper.DBHelperClass;
 
-import static android.R.attr.action;
-import static android.R.attr.mode;
-
-public class Download extends AppCompatActivity implements
+public class DownloadActivity extends AppCompatActivity implements
         DownloadQuery.OnRequestExecutedListener {
     // private Context context;
-    private static final String TAG = Download.class.getName();
+    private static final String TAG = DownloadActivity.class.getName();
     private static final String SERVER_ROOT_URL = "http://5.9.67.156/Discentia/";
     private static final String SERVER_DIRECT_ORDER_EXTENSION = "query.php";
-    private static final String API_KEY_DIRECTORDER = "u23923u5r823894n23z34fz8hhdsbvahuishwe8278";
     private String API_KEY;
     private TextView tv_download_1;
     private Button btn_downloadNow;
@@ -71,6 +66,7 @@ public class Download extends AppCompatActivity implements
         btn_downloadNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                doDownload(jsonSubject());
                 doDownload(jsonCategory());
             }
         });
@@ -104,7 +100,7 @@ public class Download extends AppCompatActivity implements
                         ArrayList<Integer> ids = new ArrayList<>();
                         getCategoriesCursor.moveToFirst();
                         Log.v(TAG, "CheckItems: " + checkedItems.toString());
-                        for(int i =0;i< lv_categories.getCount();i++){
+                        for(int i =0;i< checkedItems.size();i++){
                             if(checkedItems.valueAt(i) == true){
                                 Log.v(TAG, "CheckedItmes ValueAt: " + i + " " + String.valueOf(checkedItems.valueAt(i)));
                                 getCategoriesCursor.moveToPosition(i);
@@ -193,6 +189,12 @@ public class Download extends AppCompatActivity implements
     private JSONObject jsonCategory() {
         JsonObjectsForDownload jofd = new JsonObjectsForDownload();
         JSONObject jsonObject = jofd.getJsonForCategory();
+        return jsonObject;
+    }
+
+    private JSONObject jsonSubject() {
+        JsonObjectsForDownload jofd = new JsonObjectsForDownload();
+        JSONObject jsonObject = jofd.getJsonForSubject();
         return jsonObject;
     }
 
