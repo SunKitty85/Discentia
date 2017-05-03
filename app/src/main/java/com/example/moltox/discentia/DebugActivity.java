@@ -64,16 +64,24 @@ public class DebugActivity extends AppCompatActivity {
                 + " AND " + db.CARDS_CATEGORY_TABLE_NAME + "." + db.COL_CARDS_CATEGORY_CATEGORYID + "=" + "1";
         */
         // String query = "SELECT name FROM sqlite_master WHERE type='table'";
-        /*
-        String query = "SELECT tb_cards.question,tb_category.category,tb_subject.subject" +
+
+        String query2 = "SELECT tb_cards.*,tb_category.category,tb_subject.subject" +
                 " FROM tb_cards,tb_cards_category,tb_category,tb_subject,tb_cards_subject " +
                 "WHERE tb_cards._id = tb_cards_category.card_id " +
                 "AND tb_cards._id = tb_cards_subject.card_id " +
                 "AND tb_cards_category.category_id = 1 " +
                 "AND tb_cards_category.category_id = tb_category._id " +
                 "AND tb_cards_subject.subject_id = tb_subject._id";
-                */
-        String query = "SELECT * FROM " + DBHelperClass.CARDS_TABLE_NAME;
+/*
+        String query = "CREATE VIEW CardCategorySubject AS SELECT " + DBHelperClass.CARDS_TABLE_NAME + ".*," + DBHelperClass.CATEGORY_TABLE_NAME + "." + DBHelperClass.COL_CATEGORY_CATEGORY + "," + DBHelperClass.SUBJECT_TABLE_NAME + "." + DBHelperClass.COL_TBSUBJECT_SUBJECT +
+                " FROM " + DBHelperClass.CARDS_TABLE_NAME + "," + DBHelperClass.CARDS_CATEGORY_TABLE_NAME + "," + DBHelperClass.CATEGORY_TABLE_NAME + "," + DBHelperClass.SUBJECT_TABLE_NAME + "," + DBHelperClass.CARDS_SUBJECT_TABLE_NAME +
+                " WHERE " + DBHelperClass.CARDS_TABLE_NAME + "." + DBHelperClass.COL_CARDS_CARD_ID + " = " + DBHelperClass.CARDS_CATEGORY_TABLE_NAME + "." + DBHelperClass.COL_CARDS_CATEGORY_CARDID +
+                " AND " + DBHelperClass.CARDS_TABLE_NAME + "." + DBHelperClass.COL_CARDS_CARD_ID + "=" + DBHelperClass.CARDS_SUBJECT_TABLE_NAME + "." + DBHelperClass.COL_CARDS_SUBJECT_CARDID +
+                " AND " + DBHelperClass.CARDS_CATEGORY_TABLE_NAME + "." + DBHelperClass.COL_CARDS_CATEGORY_CATEGORYID + "=" + DBHelperClass.CATEGORY_TABLE_NAME + "." + DBHelperClass.COL_COMMON_ID +
+                " AND " + DBHelperClass.CARDS_SUBJECT_TABLE_NAME + "." + DBHelperClass.COL_CARDS_SUBJECT_SUBJECTID + "=" + DBHelperClass.SUBJECT_TABLE_NAME + "." + DBHelperClass.COL_COMMON_ID;
+*/
+
+        String query = "SELECT * FROM CardCategorySubject";
         String cursorString = db.dumpQuerytoString(query);
         //        String finalString = cursorString;
         tv1.setText(cursorString);

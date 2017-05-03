@@ -21,7 +21,7 @@ import java.util.List;
 
 public class DBHelperClass extends SQLiteOpenHelper {
     private static final String TAG = DBHelperClass.class.getName();
-    private static final int DATABASE_VERSION = 40;
+    private static final int DATABASE_VERSION = 42;
     public static final String DATABASE_NAME = "DISCENTIA.db";
 
     // Table Names
@@ -44,7 +44,7 @@ public class DBHelperClass extends SQLiteOpenHelper {
     public static final String COL_CARDS_ANSWER03 = "answer3";
     public static final String COL_CARDS_ANSWER04 = "answer4";
     public static final String COL_CARDS_RELEASE_DATE = "releaseDate";
-    public static final String COL_CARDS_CATEGORY_ID = "categoryid";
+    public static final String COL_CARDS_IMG_PATH = "img_path";
 
     // Columns cards_done table
     public static final String COL_CARDS_DONE_CARD_ID = "card_id";
@@ -70,6 +70,8 @@ public class DBHelperClass extends SQLiteOpenHelper {
     public static final String COL_CARDS_SUBJECT_CARDID = "card_id";
     public static final String COL_CARDS_SUBJECT_SUBJECTID = "subject_id";
 
+    // Views names
+    public static final String VIEW_CARD_CATEGORY_SUBJECT = "CardCategorySubject";
 
     // JSONFlags
     public static final int TABLE_FLAG_CARDS = 01;
@@ -91,7 +93,7 @@ public class DBHelperClass extends SQLiteOpenHelper {
                     + COL_CARDS_ANSWER03 + " text, "
                     + COL_CARDS_ANSWER04 + " text, "
                     + COL_CARDS_RELEASE_DATE + " text, "
-                    + COL_CARDS_CATEGORY_ID + " text)";
+                    + COL_CARDS_IMG_PATH + " text)";
 
     private static final String CREATE_TABLE_CARDS_DONE =
             "CREATE TABLE " + CARDS_DONE_TABLE_NAME + " ("
@@ -129,10 +131,21 @@ public class DBHelperClass extends SQLiteOpenHelper {
                     + COL_CARDS_SUBJECT_SUBJECTID + " integer," +
                     " PRIMARY KEY (" + COL_CARDS_SUBJECT_CARDID + "," + COL_CARDS_SUBJECT_SUBJECTID + "))";
 
+    //View(s) createn
+    private static final String CREATE_VIEW_CARD_CATEGORY_SUBJECT =
+            "CREATE VIEW " + VIEW_CARD_CATEGORY_SUBJECT + " AS SELECT " + DBHelperClass.CARDS_TABLE_NAME + ".*," + DBHelperClass.CATEGORY_TABLE_NAME + "." + DBHelperClass.COL_CATEGORY_CATEGORY + "," + DBHelperClass.SUBJECT_TABLE_NAME + "." + DBHelperClass.COL_TBSUBJECT_SUBJECT +
+            " FROM " + DBHelperClass.CARDS_TABLE_NAME + "," + DBHelperClass.CARDS_CATEGORY_TABLE_NAME + "," + DBHelperClass.CATEGORY_TABLE_NAME + "," + DBHelperClass.SUBJECT_TABLE_NAME + "," + DBHelperClass.CARDS_SUBJECT_TABLE_NAME +
+            " WHERE " + DBHelperClass.CARDS_TABLE_NAME + "." + DBHelperClass.COL_CARDS_CARD_ID + " = " + DBHelperClass.CARDS_CATEGORY_TABLE_NAME + "." + DBHelperClass.COL_CARDS_CATEGORY_CARDID +
+            " AND " + DBHelperClass.CARDS_TABLE_NAME + "." + DBHelperClass.COL_CARDS_CARD_ID + "=" + DBHelperClass.CARDS_SUBJECT_TABLE_NAME + "." + DBHelperClass.COL_CARDS_SUBJECT_CARDID +
+            " AND " + DBHelperClass.CARDS_CATEGORY_TABLE_NAME + "." + DBHelperClass.COL_CARDS_CATEGORY_CATEGORYID + "=" + DBHelperClass.CATEGORY_TABLE_NAME + "." + DBHelperClass.COL_COMMON_ID +
+            " AND " + DBHelperClass.CARDS_SUBJECT_TABLE_NAME + "." + DBHelperClass.COL_CARDS_SUBJECT_SUBJECTID + "=" + DBHelperClass.SUBJECT_TABLE_NAME + "." + DBHelperClass.COL_COMMON_ID;
+
+
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         Log.v(TAG, "DBHelperClass: onCreate");
+        // Create Tables
         db.execSQL(CREATE_TABLE_CARDS);
         db.execSQL(CREATE_TABLE_CARDS_DONE);
         db.execSQL(CREATE_TABLE_PULLS);
@@ -140,6 +153,8 @@ public class DBHelperClass extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_CARD_CATEGORY);
         db.execSQL(CREATE_TABLE_SUBJECT);
         db.execSQL(CREATE_TABLE_CARDS_SUBJECT);
+        // Create Views
+        db.execSQL(CREATE_VIEW_CARD_CATEGORY_SUBJECT);
     }
 
     @Override
@@ -153,7 +168,10 @@ public class DBHelperClass extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + SUBJECT_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + CARDS_SUBJECT_TABLE_NAME);
         Log.v(TAG, "onUpgrade: DROPPED ALL TABLES!");
-        Log.v(TAG, "Creating new Database");
+        Log.v(TAG, "onUpgrade: DROP ALL VIEWS");
+        db.execSQL("DROP VIEW IF EXISTS " + VIEW_CARD_CATEGORY_SUBJECT);
+        Log.v(TAG, "onUpgrade: DROPPED ALL VIEWS");
+        Log.v(TAG, "Calling method to Creating new Database");
         onCreate(db);
         // TODO DBHelperClass onUpgrade richtig machen
     }
@@ -171,7 +189,7 @@ public class DBHelperClass extends SQLiteOpenHelper {
             values.put(COL_CARDS_ANSWER03, table_card.getAnswer3());
             values.put(COL_CARDS_ANSWER04, table_card.getAnswer4());
             values.put(COL_CARDS_RELEASE_DATE, table_card.getReleaseDate());
-            values.put(COL_CARDS_CATEGORY_ID, table_card.getCategory_id());
+            values.put(COL_CARDS_IMG_PATH, table_card.getImg_path());
             long card_id = db.insert(CARDS_TABLE_NAME, null, values);
             return card_id;
         } else {
@@ -214,7 +232,37 @@ public class DBHelperClass extends SQLiteOpenHelper {
         card.setAnswer3(cursor.getString(cursor.getColumnIndex((COL_CARDS_ANSWER03))));
         card.setAnswer4(cursor.getString(cursor.getColumnIndex((COL_CARDS_ANSWER04))));
         card.setReleaseDate(cursor.getString(cursor.getColumnIndex(COL_CARDS_RELEASE_DATE)));
-        card.setCategory_id(cursor.getString(cursor.getColumnIndex(COL_CARDS_CATEGORY_ID)));
+        card.setImg_path(cursor.getString(cursor.getColumnIndex(COL_CARDS_IMG_PATH)));
+        return card;
+    }
+
+    // Fetching a special Card from CardCategorySubject View
+    // *******************************************************************
+    public Card getCardCategorySubject(long card_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery =
+                "SELECT * FROM " + VIEW_CARD_CATEGORY_SUBJECT + " WHERE "
+                        + COL_CARDS_CARD_ID + " = " + card_id;
+        Log.v(TAG, selectQuery);
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+            Log.v(TAG, "Moved Cursor to first");
+        }
+        Log.v(TAG, "Cursor Count: " + cursor.getCount() + "\nCursor pos: " + cursor.getPosition());
+        Card card = new Card();
+        card.setId(cursor.getInt(cursor.getColumnIndex(COL_COMMON_ID)));
+        card.setCardId(cursor.getInt(cursor.getColumnIndex(COL_CARDS_CARD_ID)));
+        card.setQuestion(cursor.getString(cursor.getColumnIndex((COL_CARDS_QUESTION))));
+        card.setAnswer1(cursor.getString(cursor.getColumnIndex((COL_CARDS_ANSWER01))));
+        card.setAnswer2(cursor.getString(cursor.getColumnIndex((COL_CARDS_ANSWER02))));
+        card.setAnswer3(cursor.getString(cursor.getColumnIndex((COL_CARDS_ANSWER03))));
+        card.setAnswer4(cursor.getString(cursor.getColumnIndex((COL_CARDS_ANSWER04))));
+        card.setReleaseDate(cursor.getString(cursor.getColumnIndex(COL_CARDS_RELEASE_DATE)));
+        card.setImg_path(cursor.getString(cursor.getColumnIndex(COL_CARDS_IMG_PATH)));
+        card.setCategory(cursor.getString(cursor.getColumnIndex(COL_CATEGORY_CATEGORY)));
+        card.setSubject(cursor.getString(cursor.getColumnIndex(COL_TBSUBJECT_SUBJECT)));
         return card;
     }
 

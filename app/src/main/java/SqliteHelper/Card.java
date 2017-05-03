@@ -13,7 +13,11 @@ public class Card {
     String answer3;
     String answer4;
     String releaseDate;
-    String category_id;
+    String img_path;
+    String category;
+
+
+    String subject;
 
     // constructors ...
     public Card()  {
@@ -23,7 +27,7 @@ public class Card {
         this.answer3 = "";
         this.answer4 = "";
         this.releaseDate = "";
-        this.category_id = "";
+        this.img_path = "";
     };
 
     /*
@@ -47,8 +51,24 @@ public class Card {
         this.answer3 = answer3;
         this.answer4 = answer4;
         this.releaseDate = releaseDate;
-        this.category_id = category_id;
+        this.img_path = img_path;
     }
+
+    public Card(int cardId, String question, String answer1, String answer2, String answer3, String answer4, String releaseDate, String category, String subject)  {
+        this.id = id;
+        this.cardId = cardId;
+        this.question = question;
+        this.answer1 = answer1;
+        this.answer2 = answer2;
+        this.answer3 = answer3;
+        this.answer4 = answer4;
+        this.releaseDate = releaseDate;
+        this.img_path = img_path;
+        this.category = category;
+        this.subject = subject;
+    }
+
+
 
     public int getId() {
         return id;
@@ -110,8 +130,24 @@ public class Card {
         this.releaseDate = releaseDate;
     }
 
-    public String getCategory_id()  {return category_id;}
+    public String getImg_path()  {return img_path;}
 
-    public void setCategory_id(String category_id)  {this.category_id = category_id;}
+    public void setImg_path(String img_path)  {this.img_path = img_path;}
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
 
 }

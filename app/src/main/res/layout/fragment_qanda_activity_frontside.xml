@@ -12,17 +12,20 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
         <TextView
+            android:id="@+id/tv_qanda_card_subject"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hier Subject"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+
+        <TextView
+            android:id="@+id/tv_qanda_card_category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Hier Kategorie"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
 
-        <TextView
-            android:id="@+id/tv_qanda_card_id"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/tv_qanda_frag_card_id"
-            android:textAlignment="center" />
+
 
         <TextView
             android:id="@+id/tv_qanda_card_question"
@@ -31,13 +34,14 @@
             android:text="@string/tv_qanda_frag_card_question"
             android:textAlignment="center" />
 
+
         <TextView
-            android:id="@+id/tv_qanda_card_answer1"
+            android:id="@+id/tv_qanda_card_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/tv_qanda_frag_card_answer1"
-            android:textAlignment="center"
-            android:visibility="invisible" />
+            android:text="@string/tv_qanda_frag_card_id"
+            android:textAlignment="center" />
+
 
         <Button
             android:id="@+id/btn_newCard"

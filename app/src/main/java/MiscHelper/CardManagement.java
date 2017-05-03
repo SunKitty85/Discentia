@@ -80,7 +80,7 @@ public class CardManagement {
                 Log.v(TAG, "Random ist: " + String.valueOf(rand) +
                         "\n Card ID ist: " + currentCardID);
             } while (currentCardID == 0);
-            card = dbHelperClass.getCard(currentCardID);
+            card = dbHelperClass.getCardCategorySubject(currentCardID);
 
         }
 
