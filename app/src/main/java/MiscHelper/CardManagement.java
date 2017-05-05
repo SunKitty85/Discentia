@@ -1,12 +1,14 @@
 package MiscHelper;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 
 import com.example.moltox.discentia.R;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -85,6 +87,15 @@ public class CardManagement {
         }
 
         return card;
+    }
+
+
+
+    private ArrayList<Integer> findunansweredCards()  {
+        ArrayList<Integer> unansweredCards = new ArrayList<Integer>();
+
+
+        return unansweredCards;
     }
 
 

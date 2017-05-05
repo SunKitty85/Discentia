@@ -21,7 +21,7 @@ import java.util.List;
 
 public class DBHelperClass extends SQLiteOpenHelper {
     private static final String TAG = DBHelperClass.class.getName();
-    private static final int DATABASE_VERSION = 42;
+    private static final int DATABASE_VERSION = 43;
     public static final String DATABASE_NAME = "DISCENTIA.db";
 
     // Table Names

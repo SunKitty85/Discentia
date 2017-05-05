@@ -107,7 +107,7 @@ public class DownloadQuery {
         JSONObject mJSONObject = contentJSON;
         String mJSONString = mJSONObject.toString();
         String urlencodedmJSONString = URLEncoder.encode(mJSONString,"UTF-8");
-        int len = 5000;
+        int len = 100000;
         /*
         Do OutputStream
          */
@@ -137,6 +137,7 @@ public class DownloadQuery {
         Reader reader = null;
         reader = new InputStreamReader(stream, "UTF-8");
         char[] buffer = new char[len];
+
         reader.read(buffer);
         return new String(buffer);
     }
