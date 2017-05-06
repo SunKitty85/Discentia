@@ -22,7 +22,7 @@ JsonObject:
 ['lastPoll'] = INT
  */
 public class JsonObjectsForDownload {
-    private static final String MyKey = "myKey2017";
+    private static final String UserToken = "mv02u2vu9023mu90u230";
     private static final String ToDoFlag_SYNC = "SYNC";
     private static final String TableName_Cards = DBHelperClass.CARDS_TABLE_NAME;   //"cards";
     private static final String TableName_Category = DBHelperClass.CATEGORY_TABLE_NAME; //"category";
@@ -34,7 +34,7 @@ public class JsonObjectsForDownload {
     public JSONObject getJsonForCategory()  {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("MyKey", MyKey);
+            jsonObject.put("Usertoken", UserToken);
             jsonObject.put("ToDoFlag",ToDoFlag_SYNC);
             jsonObject.put("TableName",TableName_Category);
             jsonObject.put("Subject_ID","");
@@ -49,7 +49,7 @@ public class JsonObjectsForDownload {
     public JSONObject getJsonForSubject()  {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("MyKey", MyKey);
+            jsonObject.put("Usertoken", UserToken);
             jsonObject.put("ToDoFlag",ToDoFlag_SYNC);
             jsonObject.put("TableName",TableName_Subject);
             jsonObject.put("Subject_ID","");
@@ -64,7 +64,7 @@ public class JsonObjectsForDownload {
     public JSONObject getJsonForCards(ArrayList<Integer> idsArrayList)  {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("MyKey", MyKey);
+            jsonObject.put("Usertoken", UserToken);
             jsonObject.put("ToDoFlag",ToDoFlag_SYNC);
             jsonObject.put("TableName",TableName_Cards);
             jsonObject.put("Categories",idsArrayList.toString());
