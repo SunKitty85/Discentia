@@ -150,5 +150,9 @@ SELECT tb_syncstat_category.user_id
 FROM tb_syncstat_category 
 WHERE tb_category.id = tb_syncstat_category.category_id);
 
+// Get User ID by Token
+SELECT id FROM tb_users
+WHERE token = 'mv02u2vu9023mu90u230';
+
 
 
