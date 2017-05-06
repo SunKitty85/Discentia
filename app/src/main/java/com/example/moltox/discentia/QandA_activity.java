@@ -44,6 +44,7 @@ public class QandA_activity extends AppCompatActivity implements TabCommunicator
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         cardManagement = new CardManagement(this);
+        /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,6 +56,7 @@ public class QandA_activity extends AppCompatActivity implements TabCommunicator
                 cardManagement.showCardDoneListAsLog();
             }
         });
+        */
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
@@ -80,7 +82,8 @@ public class QandA_activity extends AppCompatActivity implements TabCommunicator
     }
 
     @Override
-    public void sendCard(Card card) {
+    public void sendCard(Card card)
+    {
         submitStringToFrag(card);
     }
 

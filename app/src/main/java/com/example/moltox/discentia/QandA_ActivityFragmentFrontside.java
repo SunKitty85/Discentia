@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import Interfaces.TabCommunicator;
 import MiscHelper.CardManagement;
 import SqliteHelper.Card;
@@ -25,7 +27,9 @@ public class QandA_ActivityFragmentFrontside extends Fragment {
     CardManagement cardManagement;
     TextView tv_qanda_card_id;
     TextView tv_qanda_card_question;
-    TextView tv_qanda_card_answer1;
+    TextView tv_qanda_card_subject;
+    TextView tv_qanda_card_category;
+
     Button btn_newCard;
 
 
@@ -45,7 +49,8 @@ public class QandA_ActivityFragmentFrontside extends Fragment {
         cardManagement = new CardManagement(getActivity(), view);
         tv_qanda_card_id = (TextView) view.findViewById(R.id.tv_qanda_card_id);
         tv_qanda_card_question = (TextView) view.findViewById(R.id.tv_qanda_card_question);
-        tv_qanda_card_answer1 = (TextView) view.findViewById(R.id.tv_qanda_card_answer1);
+        tv_qanda_card_category = (TextView) view.findViewById(R.id.tv_qanda_card_category);
+        tv_qanda_card_subject = (TextView) view.findViewById(R.id.tv_qanda_card_subject);
 
 
         btn_newCard = (Button) view.findViewById(R.id.btn_newCard);
@@ -64,11 +69,12 @@ public class QandA_ActivityFragmentFrontside extends Fragment {
 
     private void showCard(Card card) {
 
-        tv_qanda_card_id.setText("Card ID: " + card.getId()
-                + "\nRelease Date: " + card.getReleaseDate()
-                + "\nKategorie ID: " + card.getCategory_id());
-
+        tv_qanda_card_id.setText("ID: " + card.getId());
+        tv_qanda_card_category.setText("Kategorie: " + card.getCategory());
+        tv_qanda_card_subject.setText("Subject" + card.getSubject());
         tv_qanda_card_question.setText(getString(R.string.tv_qanda_frag_card_question) + " " + card.getQuestion());
+
+
         ((TabCommunicator) getActivity()).sendCard(card);
         currentCardID = card.getId();
     }

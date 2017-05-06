@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void callDownloadActivity(View view) {
-        Intent intent = new Intent(this, Download.class);
+        Intent intent = new Intent(this, DownloadActivity.class);
         startActivity(intent);
     }
 

@@ -1,5 +1,7 @@
 package com.example.moltox.discentia;
 
+import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -16,39 +18,35 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.json.JSONException;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
-
 import CursorAdapterHelper.CategoryCursorAdapter;
-import MiscHelper.DownloadQuery;
 import MiscHelper.JsonObjectsForDownload;
 import MiscHelper.StringUtils;
 import SqliteHelper.DBHelperClass;
+import cz.msebera.android.httpclient.Header;
 
-import static android.R.attr.action;
-import static android.R.attr.mode;
-
-public class Download extends AppCompatActivity implements
-        DownloadQuery.OnRequestExecutedListener {
+public class DownloadActivity extends AppCompatActivity {
     // private Context context;
-    private static final String TAG = Download.class.getName();
-    private static final String SERVER_ROOT_URL = "http://5.9.67.156/Discentia/";
-    private static final String SERVER_DIRECT_ORDER_EXTENSION = "query.php";
-    private static final String API_KEY_DIRECTORDER = "u23923u5r823894n23z34fz8hhdsbvahuishwe8278";
+    private static final String TAG = DownloadActivity.class.getName();
+    public static final String SERVER_ROOT_URL = "http://5.9.67.156/Discentia/";
+    public static final String SERVER_DIRECT_ORDER_EXTENSION = "query.php";
     private String API_KEY;
     private TextView tv_download_1;
     private Button btn_downloadNow;
     private ListView lv_categories;
-    Cursor getCategoriesCursor;
+    private Cursor getCategoriesCursor;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +54,9 @@ public class Download extends AppCompatActivity implements
         setContentView(R.layout.activity_download);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Wait");
+        progressDialog.setCancelable(false);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -71,6 +72,9 @@ public class Download extends AppCompatActivity implements
         btn_downloadNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.v(TAG, "DoDownload Subect");
+                doDownload(jsonSubject());
+                Log.v(TAG, "DoDownload Category");
                 doDownload(jsonCategory());
             }
         });
@@ -104,7 +108,7 @@ public class Download extends AppCompatActivity implements
                         ArrayList<Integer> ids = new ArrayList<>();
                         getCategoriesCursor.moveToFirst();
                         Log.v(TAG, "CheckItems: " + checkedItems.toString());
-                        for(int i =0;i< lv_categories.getCount();i++){
+                        for(int i =0;i< checkedItems.size();i++){
                             if(checkedItems.valueAt(i) == true){
                                 Log.v(TAG, "CheckedItmes ValueAt: " + i + " " + String.valueOf(checkedItems.valueAt(i)));
                                 getCategoriesCursor.moveToPosition(i);
@@ -159,30 +163,29 @@ public class Download extends AppCompatActivity implements
         lv_categories.setAdapter(categoryCursorAdapter);
     }
 
-    private void doDownload(JSONObject jsonObject) {
-        DownloadQuery dq;
 
-        try {
-            dq = new DownloadQuery(this, "POST", SERVER_ROOT_URL + SERVER_DIRECT_ORDER_EXTENSION, API_KEY, this);
-            dq.execute(jsonObject);
+    private void doDownload(JSONObject jsonObject)  {
+        progressDialog.show();
+        AsyncHttpClient httpClient = new AsyncHttpClient();
+        RequestParams params = new RequestParams();
+        params.put("json",jsonObject);
+        String URL = SERVER_ROOT_URL + SERVER_DIRECT_ORDER_EXTENSION + "?apikey=" + API_KEY;
+        httpClient.post(URL,params,new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                progressDialog.hide();
+                insertJsonToDb(response);
+                Log.v(TAG, "Response (String): " + response.toString() );
+                tv_download_1.setText(response.toString());
+                fillListView();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+
+            }
+        });
     }
 
-    @Override
-    public void OnRequestExecuted(String result) {
-        try {
-            JSONObject jObj = new JSONObject(result);
-            insertJsonToDb(jObj);
-            tv_download_1.setText(result);
-            fillListView();
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void insertJsonToDb(JSONObject jsonObject) {
         DBHelperClass dbHelperClass = new DBHelperClass(this);
@@ -193,6 +196,12 @@ public class Download extends AppCompatActivity implements
     private JSONObject jsonCategory() {
         JsonObjectsForDownload jofd = new JsonObjectsForDownload();
         JSONObject jsonObject = jofd.getJsonForCategory();
+        return jsonObject;
+    }
+
+    private JSONObject jsonSubject() {
+        JsonObjectsForDownload jofd = new JsonObjectsForDownload();
+        JSONObject jsonObject = jofd.getJsonForSubject();
         return jsonObject;
     }
 
@@ -208,6 +217,14 @@ public class Download extends AppCompatActivity implements
         String unsecureApiKey = sharedPreferences.getString("pref_api_key", "");
         StringUtils stringUtils = new StringUtils();
         return stringUtils.md5(unsecureApiKey);
+    }
+
+    public  void showProgressDialog()  {
+        this.progressDialog.show();
+    }
+
+    public void hideProgressDialog()  {
+        this.progressDialog.hide();
     }
 }
 
