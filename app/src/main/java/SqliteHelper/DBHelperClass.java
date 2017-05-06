@@ -15,13 +15,17 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import MiscHelper.JsonObjectsForDownload;
+import MiscHelper.SyncStatUpdater;
+
 /**
  * Created by moltox on 04.03.2017.
  */
 
 public class DBHelperClass extends SQLiteOpenHelper {
+    private Context context;
     private static final String TAG = DBHelperClass.class.getName();
-    private static final int DATABASE_VERSION = 44;
+    private static final int DATABASE_VERSION = 60;
     public static final String DATABASE_NAME = "DISCENTIA.db";
 
     // Table Names
@@ -81,6 +85,7 @@ public class DBHelperClass extends SQLiteOpenHelper {
 
     public DBHelperClass(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     private static final String CREATE_TABLE_CARDS =
@@ -134,12 +139,11 @@ public class DBHelperClass extends SQLiteOpenHelper {
     //View(s) createn
     private static final String CREATE_VIEW_CARD_CATEGORY_SUBJECT =
             "CREATE VIEW " + VIEW_CARD_CATEGORY_SUBJECT + " AS SELECT " + DBHelperClass.CARDS_TABLE_NAME + ".*," + DBHelperClass.CATEGORY_TABLE_NAME + "." + DBHelperClass.COL_CATEGORY_CATEGORY + "," + DBHelperClass.SUBJECT_TABLE_NAME + "." + DBHelperClass.COL_TBSUBJECT_SUBJECT +
-            " FROM " + DBHelperClass.CARDS_TABLE_NAME + "," + DBHelperClass.CARDS_CATEGORY_TABLE_NAME + "," + DBHelperClass.CATEGORY_TABLE_NAME + "," + DBHelperClass.SUBJECT_TABLE_NAME + "," + DBHelperClass.CARDS_SUBJECT_TABLE_NAME +
-            " WHERE " + DBHelperClass.CARDS_TABLE_NAME + "." + DBHelperClass.COL_CARDS_CARD_ID + " = " + DBHelperClass.CARDS_CATEGORY_TABLE_NAME + "." + DBHelperClass.COL_CARDS_CATEGORY_CARDID +
-            " AND " + DBHelperClass.CARDS_TABLE_NAME + "." + DBHelperClass.COL_CARDS_CARD_ID + "=" + DBHelperClass.CARDS_SUBJECT_TABLE_NAME + "." + DBHelperClass.COL_CARDS_SUBJECT_CARDID +
-            " AND " + DBHelperClass.CARDS_CATEGORY_TABLE_NAME + "." + DBHelperClass.COL_CARDS_CATEGORY_CATEGORYID + "=" + DBHelperClass.CATEGORY_TABLE_NAME + "." + DBHelperClass.COL_COMMON_ID +
-            " AND " + DBHelperClass.CARDS_SUBJECT_TABLE_NAME + "." + DBHelperClass.COL_CARDS_SUBJECT_SUBJECTID + "=" + DBHelperClass.SUBJECT_TABLE_NAME + "." + DBHelperClass.COL_COMMON_ID;
-
+                    " FROM " + DBHelperClass.CARDS_TABLE_NAME + "," + DBHelperClass.CARDS_CATEGORY_TABLE_NAME + "," + DBHelperClass.CATEGORY_TABLE_NAME + "," + DBHelperClass.SUBJECT_TABLE_NAME + "," + DBHelperClass.CARDS_SUBJECT_TABLE_NAME +
+                    " WHERE " + DBHelperClass.CARDS_TABLE_NAME + "." + DBHelperClass.COL_CARDS_CARD_ID + " = " + DBHelperClass.CARDS_CATEGORY_TABLE_NAME + "." + DBHelperClass.COL_CARDS_CATEGORY_CARDID +
+                    " AND " + DBHelperClass.CARDS_TABLE_NAME + "." + DBHelperClass.COL_CARDS_CARD_ID + "=" + DBHelperClass.CARDS_SUBJECT_TABLE_NAME + "." + DBHelperClass.COL_CARDS_SUBJECT_CARDID +
+                    " AND " + DBHelperClass.CARDS_CATEGORY_TABLE_NAME + "." + DBHelperClass.COL_CARDS_CATEGORY_CATEGORYID + "=" + DBHelperClass.CATEGORY_TABLE_NAME + "." + DBHelperClass.COL_COMMON_ID +
+                    " AND " + DBHelperClass.CARDS_SUBJECT_TABLE_NAME + "." + DBHelperClass.COL_CARDS_SUBJECT_SUBJECTID + "=" + DBHelperClass.SUBJECT_TABLE_NAME + "." + DBHelperClass.COL_COMMON_ID;
 
 
     @Override
@@ -383,7 +387,8 @@ public class DBHelperClass extends SQLiteOpenHelper {
         try {
             int table_flag = jsonObject.getInt("TABLE_FLAG");
             Log.v(TAG, "Table Flag: " + table_flag + "\nTable Flag string:" + TABLE_FLAG_CATEGORY + "|");
-
+            JSONArray updateSyncStatJsonArray = new JSONArray();
+            SyncStatUpdater syncStatUpdater = new SyncStatUpdater(context);
             switch (table_flag) {
                 case TABLE_FLAG_CARDS:
                     Log.v(TAG, "TABLE_FLAG_CARDS");
@@ -444,6 +449,10 @@ public class DBHelperClass extends SQLiteOpenHelper {
                         contentValues.put(COL_CARDS_SUBJECT_CARDID, card_id);
                         contentValues.put(COL_CARDS_SUBJECT_SUBJECTID, subject_id);
                         long cat_id = insertCards_Subject(contentValues);
+                        Log.v(TAG, "Category inserted with id: " + cat_id);
+                        if (cat_id != -1) {
+                            updateSyncStatJsonArray.put(cat_id);
+                        }
                     }
                     break;
                 case TABLE_FLAG_CATEGORY:
@@ -463,7 +472,12 @@ public class DBHelperClass extends SQLiteOpenHelper {
                         contentValues.put(COL_CATEGORY_PICFILENAME, jObj.getString("img_path"));
                         long cat_id = insertCategory(contentValues);
                         Log.v(TAG, "Category inserted with id: " + cat_id);
+                        if (cat_id != -1) {
+                            updateSyncStatJsonArray.put(cat_id);
+                        }
                     }
+                    Log.v(TAG, "UpdateSyncStatJsonArray: " + updateSyncStatJsonArray.toString());
+                    syncStatUpdater.updateSyncStatCategory(updateSyncStatJsonArray);
                     break;
 
                 case TABLE_FLAG_SUBJECT:
@@ -481,9 +495,15 @@ public class DBHelperClass extends SQLiteOpenHelper {
                         contentValues.put(COL_COMMON_ID, jObj.getString("id"));
                         contentValues.put(COL_TBSUBJECT_SUBJECT, jObj.getString("subject"));
                         contentValues.put(COL_TBSUBJECT_IMGPATH, jObj.getString("img_path"));
-                        long cat_id = insertSubject(contentValues);
-                        Log.v(TAG, "Category inserted with id: " + cat_id);
+                        long sub_id = insertSubject(contentValues);
+                        Log.v(TAG, "Subject inserted with id: " + sub_id);
+                        if (sub_id != -1) {
+                            updateSyncStatJsonArray.put(sub_id);
+                        }
                     }
+                    Log.v(TAG, "UpdateSyncStatJsonArray: " + updateSyncStatJsonArray.toString());
+
+                    syncStatUpdater.updateSyncStatSubject(updateSyncStatJsonArray);
                     break;
             }
         } catch (JSONException e) {
@@ -491,7 +511,6 @@ public class DBHelperClass extends SQLiteOpenHelper {
         }
 
     }
-
 
 
     private long insertCategory(ContentValues contentValues) {

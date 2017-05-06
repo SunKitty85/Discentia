@@ -39,14 +39,14 @@ import cz.msebera.android.httpclient.Header;
 public class DownloadActivity extends AppCompatActivity {
     // private Context context;
     private static final String TAG = DownloadActivity.class.getName();
-    private static final String SERVER_ROOT_URL = "http://5.9.67.156/Discentia/";
-    private static final String SERVER_DIRECT_ORDER_EXTENSION = "query.php";
+    public static final String SERVER_ROOT_URL = "http://5.9.67.156/Discentia/";
+    public static final String SERVER_DIRECT_ORDER_EXTENSION = "query.php";
     private String API_KEY;
     private TextView tv_download_1;
     private Button btn_downloadNow;
     private ListView lv_categories;
-    Cursor getCategoriesCursor;
-    ProgressDialog progressDialog;
+    private Cursor getCategoriesCursor;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,11 +174,12 @@ public class DownloadActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
+                progressDialog.hide();
                 insertJsonToDb(response);
                 Log.v(TAG, "Response (String): " + response.toString() );
                 tv_download_1.setText(response.toString());
                 fillListView();
-                progressDialog.hide();
+
 
 
             }
@@ -216,6 +217,14 @@ public class DownloadActivity extends AppCompatActivity {
         String unsecureApiKey = sharedPreferences.getString("pref_api_key", "");
         StringUtils stringUtils = new StringUtils();
         return stringUtils.md5(unsecureApiKey);
+    }
+
+    public  void showProgressDialog()  {
+        this.progressDialog.show();
+    }
+
+    public void hideProgressDialog()  {
+        this.progressDialog.hide();
     }
 }
 
