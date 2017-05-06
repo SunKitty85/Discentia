@@ -79,20 +79,52 @@ INSERT INTO `tb_category` (`id`, `category`, `img_path`) VALUES
 (NULL, 'Ganzheitliche Aufgabe 2', NULL),
 (NULL, 'Wirtschafts- und Sozialkunde', NULL);
 
-// Select only unsynced Cards
-SELECT DISTINCT tb_cards.* 
+// CREATE View of unsynced Cards (independent from user id!)
+CREATE VIEW view_unsyncedCards AS
+SELECT DISTINCT tb_cards.*,tb_users.token 
 FROM tb_cards,tb_users 
 LEFT JOIN tb_syncstat_card ON 1=1
-WHERE tb_users.token = 'mv02u2vu9023mu90u230' 
-AND
+WHERE
 (tb_users.id = tb_syncstat_card.user_id 
 OR (SELECT COUNT(*) FROM tb_syncstat_card WHERE tb_syncstat_card.user_id = tb_users.id) = 0)
 AND tb_users.id NOT IN (
 SELECT tb_syncstat_card.user_id 
 FROM tb_syncstat_card 
-WHERE tb_subject.id = tb_syncstat_card.card_id);
+WHERE tb_cards.id = tb_syncstat_card.card_id);
+
+// Select only unsynced Cards
+SELECT DISTINCT
+view_unsyncedCards.id,
+view_unsyncedCards.question,
+view_unsyncedCards.answer1,
+view_unsyncedCards.answer2,
+view_unsyncedCards.answer3,
+view_unsyncedCards.answer4,
+view_unsyncedCards.releaseDate,
+view_unsyncedCards.img_path 
+FROM view_unsyncedCards 
+WHERE view_unsyncedCards.token = 'mv02u2vu9023mu90u230' 
+
+// Select only tb_cards_category of unsynced cards
+// ***************************************************************************
+
+SELECT * FROM tb_cards_category
+WHERE tb_cards_category.card_id IN 
+(
+SELECT view_unsyncedCards.id FROM view_unsyncedCards WHERE view_unsyncedCards.token='mv02u2vu9023mu90u230'
+);
+
+// Select only tb_cards_subject of unsynced cards
+// *****************************************************************************
+
+SELECT * FROM tb_cards_subject
+WHERE tb_cards_subject.card_id IN 
+(
+SELECT view_unsyncedCards.id FROM view_unsyncedCards WHERE view_unsyncedCards.token='mv02u2vu9023mu90u230'
+);
 
 // Select only unsynced Subjects 
+// ******************************************************************************
 SELECT DISTINCT tb_subject.* 
 FROM tb_subject,tb_users 
 LEFT JOIN tb_syncstat_subject ON 1=1
