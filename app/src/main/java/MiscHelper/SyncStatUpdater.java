@@ -103,5 +103,36 @@ public class SyncStatUpdater {
         });
     }
 
+    public void updateSyncStatCard(JSONArray jsonArray) {
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setMessage("Wait");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("Usertoken", UserToken);
+            jsonObject.put("ToDoFlag", ToDoFlag_UpdateSyncStats);
+            jsonObject.put("TableName", TableName_Cards);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AsyncHttpClient httpClient = new AsyncHttpClient();
+        RequestParams params = new RequestParams();
+        params.put("settings", jsonObject);
+        params.put("content", jsonArray);
+        String URL = DownloadActivity.SERVER_ROOT_URL + UrlSyncUpdateExtension + "?apikey=" + API_KEY;
+        httpClient.post(URL, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                progressDialog.hide();
+                Log.v(TAG, "Response (Update Sync Stat Subject)(String): " + response.toString());
+            }
+
+
+
+        });
+    }
+
 
 }

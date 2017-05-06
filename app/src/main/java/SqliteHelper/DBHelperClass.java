@@ -25,7 +25,7 @@ import MiscHelper.SyncStatUpdater;
 public class DBHelperClass extends SQLiteOpenHelper {
     private Context context;
     private static final String TAG = DBHelperClass.class.getName();
-    private static final int DATABASE_VERSION = 60;
+    private static final int DATABASE_VERSION = 61;
     public static final String DATABASE_NAME = "DISCENTIA.db";
 
     // Table Names
@@ -408,10 +408,15 @@ public class DBHelperClass extends SQLiteOpenHelper {
                             }
                             Card card = new Card(cardId, jObj.getString("question"), jObj.getString("answer1"), jObj.getString("answer2"), jObj.getString("answer3"), jObj.getString("answer4"), jObj.getString("releaseDate"));
                             long card_id = this.createCard(card);
+                            if (card_id != -1) {
+                                updateSyncStatJsonArray.put(card_id);
+                            }
                         } else {
                             break;
                         }
                     }
+                    Log.v(TAG, "UpdateSyncStatJsonArray (Cards): " + updateSyncStatJsonArray.toString());
+                    syncStatUpdater.updateSyncStatCard(updateSyncStatJsonArray);
                     // Cards_Category Table insert
                     for (int i = 0; i < jArrayDbCardsCategories.length() - 1; i++) {
                         JSONObject jObj = new JSONObject(jArrayDbCardsCategories.getString(i));
@@ -429,7 +434,7 @@ public class DBHelperClass extends SQLiteOpenHelper {
 
                         contentValues.put(COL_CARDS_CATEGORY_CARDID, card_id);
                         contentValues.put(COL_CARDS_CATEGORY_CATEGORYID, category_id);
-                        long cat_id = insertCards_Category(contentValues);
+                        long cards_category_id = insertCards_Category(contentValues);
                     }
                     // Cards_Subject Table insert
                     for (int i = 0; i < jArrayDbCardsSubjects.length() - 1; i++) {
@@ -448,11 +453,9 @@ public class DBHelperClass extends SQLiteOpenHelper {
 
                         contentValues.put(COL_CARDS_SUBJECT_CARDID, card_id);
                         contentValues.put(COL_CARDS_SUBJECT_SUBJECTID, subject_id);
-                        long cat_id = insertCards_Subject(contentValues);
-                        Log.v(TAG, "Category inserted with id: " + cat_id);
-                        if (cat_id != -1) {
-                            updateSyncStatJsonArray.put(cat_id);
-                        }
+                        long cards_subject_id = insertCards_Subject(contentValues);
+                        Log.v(TAG, "Category inserted with id: " + cards_subject_id);
+
                     }
                     break;
                 case TABLE_FLAG_CATEGORY:
