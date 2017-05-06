@@ -41,6 +41,35 @@ category varchar(50),
 img_path varchar(50),
 PRIMARY KEY (id));
 
+CREATE TABLE tb_syncstat_category (
+id int auto_increment,
+user_id int,
+category_id int,
+PRIMARY KEY (id));
+
+CREATE TABLE tb_syncstat_subject (
+id int auto_increment,
+user_id int,
+subject_id int,
+PRIMARY KEY (id));
+
+CREATE TABLE tb_syncstat_card (
+id int auto_increment,
+user_id int,
+card_id int,
+PRIMARY KEY (id));
+
+CREATE TABLE tb_users (
+id int auto_increment,
+last_name varchar(50),
+pre_name varchar(50),
+token varchar(50),
+PRIMARY KEY (id));
+
+
+
+
+
 INSERT INTO `tb_subject` (`id`, `subject`, `img_path`) VALUES 
 (NULL, 'Fachinformatiker(in) AE', NULL),
 (NULL, 'Fachinformatiker(in) Systemintegration', NULL);
@@ -49,3 +78,45 @@ INSERT INTO `tb_category` (`id`, `category`, `img_path`) VALUES
 (NULL, 'Ganzheitliche Aufgabe 1', NULL),
 (NULL, 'Ganzheitliche Aufgabe 2', NULL),
 (NULL, 'Wirtschafts- und Sozialkunde', NULL);
+
+// Select only unsynced Cards
+SELECT DISTINCT tb_cards.* 
+FROM tb_cards,tb_users 
+LEFT JOIN tb_syncstat_card ON 1=1
+WHERE tb_users.token = 'mv02u2vu9023mu90u230' 
+AND
+(tb_users.id = tb_syncstat_card.user_id 
+OR (SELECT COUNT(*) FROM tb_syncstat_card WHERE tb_syncstat_card.user_id = tb_users.id) = 0)
+AND tb_users.id NOT IN (
+SELECT tb_syncstat_card.user_id 
+FROM tb_syncstat_card 
+WHERE tb_subject.id = tb_syncstat_card.card_id);
+
+// Select only unsynced Subjects 
+SELECT DISTINCT tb_subject.* 
+FROM tb_subject,tb_users 
+LEFT JOIN tb_syncstat_subject ON 1=1
+WHERE tb_users.token = 'mv02u2vu9023mu90u230' 
+AND
+(tb_users.id = tb_syncstat_subject.user_id 
+OR (SELECT COUNT(*) FROM tb_syncstat_subject WHERE tb_syncstat_subject.user_id = tb_users.id) = 0)
+AND tb_users.id NOT IN (
+SELECT tb_syncstat_subject.user_id 
+FROM tb_syncstat_subject 
+WHERE tb_subject.id = tb_syncstat_subject.subject_id);
+
+// Select only unsynced Categories
+SELECT tb_category.* 
+FROM tb_category,tb_users 
+LEFT JOIN tb_syncstat_category ON 1=1  
+WHERE tb_users.token = 'mv02u2vu9023mu90u230' 
+AND
+(tb_users.id = tb_syncstat_category.user_id 
+OR (SELECT COUNT(*) FROM tb_syncstat_category WHERE tb_syncstat_category.user_id = tb_users.id) = 0)
+AND tb_users.id NOT IN ( 
+SELECT tb_syncstat_category.user_id 
+FROM tb_syncstat_category 
+WHERE tb_category.id = tb_syncstat_category.category_id);
+
+
+
