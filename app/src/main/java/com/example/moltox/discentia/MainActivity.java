@@ -25,10 +25,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = MainActivity.class.getName();
-    private int count;
     private TextView m_tv_main;
-    private Button btn_debugActivity;
-    private Button btn_showCards;
     private View view;
     private boolean debugEnabled;
     private SharedPreferences sharedPref;
@@ -55,21 +52,18 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
         m_tv_main = (TextView) findViewById(R.id.id_tv_main);
-        showBuildData();
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-
+        showBuildData();
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        boolean debugEnabled = sharedPref.getBoolean("key_debug_switch", false);
+        debugEnabled = sharedPref.getBoolean("key_debug_switch", false);
         Menu navMenu = navigationView.getMenu();
         if (debugEnabled) {
             navMenu.findItem(R.id.nav_debugItem).setVisible(true);
